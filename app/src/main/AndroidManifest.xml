@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="br.com.gustavo.popularmovies">
 
-    <uses-sdk tools:overrideLibrary="android.support.v7.appcompat, android.support.v4, android.support.mediacompat, android.support.fragment, android.support.coreui, android.support.coreutils, android.support.graphics.drawable, android.support.compat, android.support.v7.recyclerview" />
+    <!--<uses-sdk tools:overrideLibrary="android.support.v7.appcompat, android.support.v4, android.support.mediacompat, android.support.fragment, android.support.coreui, android.support.coreutils, android.support.graphics.drawable, android.support.compat, android.support.v7.recyclerview" />-->
 
     <uses-permission android:name="android.permission.INTERNET"/>
 

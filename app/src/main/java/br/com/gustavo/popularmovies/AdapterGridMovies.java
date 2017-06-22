@@ -62,8 +62,6 @@ class AdapterGridMovies extends RecyclerView.Adapter<AdapterGridMovies.MovieView
     public void onBindViewHolder(AdapterGridMovies.MovieViewHolder holder, int position) {
         Log.d(TAG, "Position holder: " + position);
 
-        // TODO Tratar se existe a url da imagem
-
         URL url = NetworkUtils.buildUrlImageBy(mMovies[position]);
 
         GlideApp.with(holder.itemView)

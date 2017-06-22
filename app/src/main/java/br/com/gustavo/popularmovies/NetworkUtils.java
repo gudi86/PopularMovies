@@ -32,7 +32,7 @@ public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    private static final String API_KEY = "<API_KEY>";
+    private static final String API_KEY = "<API_KEY>;
 
     private static final String STATIC_MOVIE = "https://api.themoviedb.org/";
 

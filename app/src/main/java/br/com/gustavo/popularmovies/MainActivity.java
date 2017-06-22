@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
     private void finishLoadMovies(Boolean isError) {
         if (isError) {
             llErrorLoad.setVisibility(View.VISIBLE);
-            Button button = llErrorLoad.findViewById(R.id.bt_try);
+            Button button = (Button) llErrorLoad.findViewById(R.id.bt_try);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
