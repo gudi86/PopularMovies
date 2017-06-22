@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">PopularMovies</string>
+    <string name="title_bar_details">MovieDetail</string>
+    <string name="action_order_most_popular">Most Popular</string>
+    <string name="action_order_top_rated">Top Rated</string>
+    <string name="cd_title">Title Movie</string>
+    <string name="txt_msg_error_load_movies">We can\'t load movies. Try again.</string>
+    <string name="lbl_try">Try Again</string>
+</resources>
