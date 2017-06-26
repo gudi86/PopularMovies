@@ -27,6 +27,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         if (savedInstanceState != null && savedInstanceState.containsKey(MainActivity.SAVE_MOVIE)) {
             movie = savedInstanceState.getParcelable(MainActivity.SAVE_MOVIE);
+            bindData(movie);
         } else {
             if (getIntent() != null && getIntent().hasExtra(MainActivity.SAVE_MOVIE)) {
                 movie = getIntent().getParcelableExtra(MainActivity.SAVE_MOVIE);

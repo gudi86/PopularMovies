@@ -11,8 +11,8 @@ import retrofit2.http.Query;
 public interface MovieService {
 
     @GET("3/movie/popular")
-    Call<Result> fetchMoviesPopular(@Query("api_key") String key);
+    Call<Result> fetchMoviesPopular();
 
     @GET("3/movie/top_rated")
-    Call<Result> fetchMoviesTopRated(@Query("api_key") String key);
+    Call<Result> fetchMoviesTopRated();
 }

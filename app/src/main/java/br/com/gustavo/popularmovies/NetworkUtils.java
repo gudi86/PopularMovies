@@ -18,10 +18,15 @@ package br.com.gustavo.popularmovies;
 import android.net.Uri;
 import android.util.Log;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -65,21 +70,43 @@ final class NetworkUtils {
     }
 
     static Call<Result> createMovieServiceBySort(int kindOrder) {
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+        builder.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+                HttpUrl originalHttpUrl = original.url();
+
+                HttpUrl url = originalHttpUrl.newBuilder()
+                        .addQueryParameter("api_key", BuildConfig.API_KEY)
+                        .build();
+
+                // Request customization: add request headers
+                Request.Builder requestBuilder = original.newBuilder()
+                        .url(url);
+
+                Request request = requestBuilder.build();
+                return chain.proceed(request);
+            }
+        });
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(NetworkUtils.buildHost().toString())
                 .addConverterFactory(
                         GsonConverterFactory.create()
                 )
                 .client(
-                        new OkHttpClient.Builder().build()
+                        builder.build()
                 )
                 .build();
 
         Call<Result> callMovies;
         if (kindOrder == 0) {
-            callMovies = retrofit.create(MovieService.class).fetchMoviesPopular(BuildConfig.API_KEY);
+            callMovies = retrofit.create(MovieService.class).fetchMoviesPopular();
         } else {
-            callMovies = retrofit.create(MovieService.class).fetchMoviesTopRated(BuildConfig.API_KEY);
+            callMovies = retrofit.create(MovieService.class).fetchMoviesTopRated();
         }
         return callMovies;
     }
