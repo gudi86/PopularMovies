@@ -4,6 +4,8 @@
     <string name="action_order_most_popular">Most Popular</string>
     <string name="action_order_top_rated">Top Rated</string>
     <string name="cd_title">Title Movie</string>
-    <string name="txt_msg_error_load_movies">We can\'t load movies. Try again.</string>
+    <string name="txt_msg_error_load_movies">We can\'t load results. Try again.</string>
     <string name="lbl_try">Try Again</string>
+    <string name="txt_msg_error_load_movie">Movie doesn\'t load. It will be closed.</string>
+    <string name="lbl_ok">Ok</string>
 </resources>

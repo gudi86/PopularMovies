@@ -2,7 +2,7 @@ package br.com.gustavo.popularmovies;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,12 +14,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import java.io.IOException;
-import java.net.URL;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements AdapterGridMovies.MovieOnClickAdapter{
+public class MainActivity extends AppCompatActivity implements AdapterGridMovies.MovieOnClickAdapter, Callback<Result>{
 
     private final static String TAG = MainActivity.class.getSimpleName();
 
@@ -64,7 +64,8 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
             adapterGridMovies.setNewMovies(movies);
         } else {
             currentFilter = NetworkUtils.URL_POPULAR;
-            new RequestMovie().execute(NetworkUtils.buildUrlMovieBySort(currentFilter));
+            startLoadMovies();
+            NetworkUtils.createMovieServiceBySort(currentFilter).enqueue(this);
         }
     }
 
@@ -112,7 +113,8 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
 
         if (filterSelected > -1) {
             currentFilter = filterSelected;
-            new RequestMovie().execute(NetworkUtils.buildUrlMovieBySort(currentFilter));
+            startLoadMovies();
+            NetworkUtils.createMovieServiceBySort(currentFilter).enqueue(this);
             return true;
         }
 
@@ -123,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
         recycler.setVisibility(View.INVISIBLE);
         llErrorLoad.setVisibility(View.INVISIBLE);
         pbLoadWait.setVisibility(View.VISIBLE);
+        // It sends list to top when list on bottom
+        recycler.getLayoutManager().scrollToPosition(0);
     }
 
     private void finishLoadMovies(Boolean isError) {
@@ -132,7 +136,8 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new RequestMovie().execute(NetworkUtils.buildUrlMovieBySort(currentFilter));
+                    startLoadMovies();
+                    NetworkUtils.createMovieServiceBySort(currentFilter).enqueue(MainActivity.this);
                 }
             });
 
@@ -142,44 +147,20 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
         pbLoadWait.setVisibility(View.INVISIBLE);
     }
 
-    private class RequestMovie extends AsyncTask<URL, Void, Movie[]> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            startLoadMovies();
+    @Override
+    public void onResponse(@NonNull Call<Result> call, @NonNull Response<Result> response) {
+        if (response.body() == null || response.body().getResults() == null) {
+            finishLoadMovies(true);
+            return ;
         }
 
-        @Override
-        protected Movie[] doInBackground(URL... urls) {
-            if (urls == null) {
-                return null;
-            }
+        finishLoadMovies(false);
+        movies = response.body().getResults();
+        ((AdapterGridMovies) recycler.getAdapter()).setNewMovies(movies);
+    }
 
-            Movie[] movies = null;
-            try {
-
-                String response = NetworkUtils.getResponseFromHttpUrl(urls[0]);
-
-                if (response != null) {
-                    movies = UtilsJsonMovie.convertJsonObjectToMovies(response);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return movies;
-        }
-
-        @Override
-        protected void onPostExecute(Movie[] movies) {
-            if (movies == null) {
-                finishLoadMovies(true);
-                return ;
-            }
-
-            finishLoadMovies(false);
-            MainActivity.this.movies = movies;
-            ((AdapterGridMovies) recycler.getAdapter()).setNewMovies(MainActivity.this.movies);
-        }
+    @Override
+    public void onFailure(@NonNull Call<Result> call, @NonNull Throwable t) {
+        finishLoadMovies(true);
     }
 }

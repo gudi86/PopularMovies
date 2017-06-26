@@ -2,5 +2,7 @@
 <resources>
     <color name="colorPrimary">#212121</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">@android:color/white</color>
+    <color name="bg_title">#009688</color>
+    <color name="lbl_color">#212121</color>
 </resources>

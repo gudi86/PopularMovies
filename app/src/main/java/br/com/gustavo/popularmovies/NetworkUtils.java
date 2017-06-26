@@ -18,28 +18,27 @@ package br.com.gustavo.popularmovies;
 import android.net.Uri;
 import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Scanner;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * These utilities will be used to communicate with the weather servers.
  */
-public final class NetworkUtils {
+final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
-
-    private static final String API_KEY = "<API_KEY>";
 
     private static final String STATIC_MOVIE = "https://api.themoviedb.org/";
 
     private static final String STATIC_IMG = "http://image.tmdb.org/";
 
-    public static final int URL_POPULAR = 0;
-    public static final int URL_RATED = 1;
+    static final int URL_POPULAR = 0;
+    static final int URL_RATED = 1;
 
 
     /*
@@ -53,36 +52,43 @@ public final class NetworkUtils {
         http://image.tmdb.org/t/p/[w92|w154|w185|w342|w500|w780|original]/id_img
      */
 
-    /**
-     *
-     * @param kindOrder The location that will be queried for.
-     * @return The URL to use to query the weather server.
-     */
-    public static URL buildUrlMovieBySort(int kindOrder) {
-
-        Uri uri = Uri.parse(STATIC_MOVIE).buildUpon()
-                .path("3/discover/movie")
-                .appendQueryParameter("api_key", API_KEY)
-                .appendQueryParameter("sort_by", kindOrder==0?"popularity.desc":"vote_count.desc")
-                .build();
-
+    private static URL buildHost() {
+        Uri uri = Uri.parse(STATIC_MOVIE).buildUpon().build();
         URL url = null;
         try {
             url = new URL(uri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
         Log.v(TAG, "Built URI " + url);
-
         return url;
     }
 
-    public static URL buildUrlImageBy(Movie movie) {
+    static Call<Result> createMovieServiceBySort(int kindOrder) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(NetworkUtils.buildHost().toString())
+                .addConverterFactory(
+                        GsonConverterFactory.create()
+                )
+                .client(
+                        new OkHttpClient.Builder().build()
+                )
+                .build();
+
+        Call<Result> callMovies;
+        if (kindOrder == 0) {
+            callMovies = retrofit.create(MovieService.class).fetchMoviesPopular(BuildConfig.API_KEY);
+        } else {
+            callMovies = retrofit.create(MovieService.class).fetchMoviesTopRated(BuildConfig.API_KEY);
+        }
+        return callMovies;
+    }
+
+    static URL buildUrlImageBy(Movie movie) {
 
         Uri uri = Uri.parse(STATIC_IMG).buildUpon()
                 .path("t/p/w185")
-                .appendPath(movie.getPosterPath())
+                .appendPath(movie.getPosterPath().replace("/", ""))
                 .build();
 
         URL url = null;
@@ -95,31 +101,5 @@ public final class NetworkUtils {
         Log.v(TAG, "Built URI " + url);
 
         return url;
-    }
-
-    /**
-     * This method returns the entire result from the HTTP response.
-     *
-     * @param url The URL to fetch the HTTP response from.
-     * @return The contents of the HTTP response.
-     * @throws IOException Related to network and stream reading
-     */
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
-
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
-            }
-        } finally {
-            urlConnection.disconnect();
-        }
     }
 }

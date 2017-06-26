@@ -3,6 +3,8 @@ package br.com.gustavo.popularmovies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 /**
@@ -10,11 +12,15 @@ import java.util.Date;
  */
 
 public class Movie implements Parcelable {
+
     private Integer id;
     private String title;
     private String overview;
+    @SerializedName("vote_average")
     private Double rated;
+    @SerializedName("release_date")
     private Date releaseDate;
+    @SerializedName("poster_path")
     private String posterPath;
 
     public Movie(Integer id, String title, String overview, Double rated, Date releaseDate, String posterPath) {

@@ -1,6 +1,8 @@
 package br.com.gustavo.popularmovies;
 
+import android.content.DialogInterface;
 import android.os.PersistableBundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -26,9 +28,22 @@ public class DetailsActivity extends AppCompatActivity {
         if (savedInstanceState != null && savedInstanceState.containsKey(MainActivity.SAVE_MOVIE)) {
             movie = savedInstanceState.getParcelable(MainActivity.SAVE_MOVIE);
         } else {
-            movie = getIntent().getParcelableExtra(MainActivity.SAVE_MOVIE);
+            if (getIntent() != null && getIntent().hasExtra(MainActivity.SAVE_MOVIE)) {
+                movie = getIntent().getParcelableExtra(MainActivity.SAVE_MOVIE);
+                bindData(movie);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.txt_msg_error_load_movie);
+                builder.setPositiveButton(R.string.lbl_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
         }
-        bindData(movie);
     }
 
     @Override
