@@ -1,90 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/white"
-    tools:context="br.com.gustavo.popularmovies.DetailsActivity">
-
-    <android.support.constraint.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="movie"
+            type="br.com.gustavo.popularmovies.Movie"/>
+    </data>
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        tools:context="br.com.gustavo.popularmovies.DetailsActivity">
 
-        <TextView
-            android:id="@+id/tv_original_title"
-            android:layout_width="0dp"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/bg_title"
-            android:paddingBottom="@dimen/pad_high"
-            android:paddingStart="@dimen/pad_high"
-            android:paddingTop="@dimen/pad_high"
-            tools:text="Chappie"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/txt_sz_high"
-            app:layout_constraintHorizontal_bias="0.18"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingLeft="@dimen/pad_high" />
+            >
 
-        <ImageView
-            android:id="@+id/iv_poster"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/height_img"
-            android:layout_marginEnd="@dimen/pad_low"
-            android:layout_marginLeft="@dimen/pad_high"
-            android:layout_marginRight="@dimen/pad_low"
-            android:layout_marginStart="@dimen/pad_high"
-            android:layout_marginTop="@dimen/pad_medium"
-            android:adjustViewBounds="true"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/tv_release_date"
-            app:layout_constraintTop_toBottomOf="@+id/tv_original_title"
-            tools:src="@mipmap/ic_launcher" />
+            <TextView
+                android:id="@+id/tv_original_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_title"
+                android:paddingBottom="@dimen/pad_high"
+                android:paddingStart="@dimen/pad_high"
+                android:paddingTop="@dimen/pad_high"
+                tools:text="Chappie"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/txt_sz_high"
+                app:layout_constraintHorizontal_bias="0.18"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:paddingLeft="@dimen/pad_high"
+                android:text="@{movie.title}"/>
 
-        <TextView
-            android:id="@+id/tv_release_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="2015"
-            android:textColor="@color/lbl_color"
-            android:textSize="@dimen/txt_sz_medium"
-            app:layout_constraintHorizontal_bias="0.56"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/iv_poster" />
+            <ImageView
+                android:id="@+id/iv_poster"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/height_img"
+                android:layout_marginEnd="@dimen/pad_low"
+                android:layout_marginLeft="@dimen/pad_high"
+                android:layout_marginRight="@dimen/pad_low"
+                android:layout_marginStart="@dimen/pad_high"
+                android:layout_marginTop="@dimen/pad_medium"
+                android:adjustViewBounds="true"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/tv_release_date"
+                app:layout_constraintTop_toBottomOf="@+id/tv_original_title"
+                tools:src="@mipmap/ic_launcher"
+                app:imageUrl="@{movie}"/>
 
-        <TextView
-            android:id="@+id/tv_rating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_medium"
-            tools:text="8.5/10"
-            android:textColor="@color/lbl_color"
-            android:textSize="@dimen/txt_sz_low"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_release_date"
-            app:layout_constraintTop_toBottomOf="@+id/tv_release_date" />
+            <TextView
+                android:id="@+id/tv_release_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="2015"
+                android:textColor="@color/lbl_color"
+                android:textSize="@dimen/txt_sz_medium"
+                app:layout_constraintHorizontal_bias="0.56"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_poster"
+                android:text="@{movie.releaseDateFormat}"/>
 
-        <TextView
-            android:id="@+id/tv_synopsis"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/pad_low"
-            android:layout_marginRight="@dimen/pad_low"
-            android:layout_marginTop="@dimen/pad_medium"
-            tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
-            android:textColor="@color/lbl_color"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_poster"
-            android:layout_marginStart="@dimen/pad_low"
-            android:layout_marginEnd="@dimen/pad_low" />
+            <TextView
+                android:id="@+id/tv_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_medium"
+                tools:text="8.5/10"
+                android:textColor="@color/lbl_color"
+                android:textSize="@dimen/txt_sz_low"
+                app:layout_constraintLeft_toLeftOf="@+id/tv_release_date"
+                app:layout_constraintTop_toBottomOf="@+id/tv_release_date"
+                android:text='@{String.format("%.2f", movie.rated)}'/>
 
-    </android.support.constraint.ConstraintLayout>
-</ScrollView>
+            <TextView
+                android:id="@+id/tv_synopsis"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/pad_low"
+                android:layout_marginRight="@dimen/pad_low"
+                android:layout_marginTop="@dimen/pad_medium"
+                tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
+                android:textColor="@color/lbl_color"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_poster"
+                android:layout_marginStart="@dimen/pad_low"
+                android:layout_marginEnd="@dimen/pad_low"
+                android:text="@{movie.overview}"/>
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+</layout>

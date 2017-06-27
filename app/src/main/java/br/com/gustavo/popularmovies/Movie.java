@@ -5,7 +5,10 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by gustavomagalhaes on 6/16/17.
@@ -71,6 +74,10 @@ public class Movie implements Parcelable {
 
     public Date getReleaseDate() {
         return releaseDate;
+    }
+
+    public String getReleaseDateFormat() {
+        return new SimpleDateFormat("yyyy", Locale.getDefault()).format(releaseDate);
     }
 
     public String getPosterPath() {
