@@ -27,6 +27,10 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity"/>
 
         </activity>
+
+        <provider
+            android:authorities="br.com.gustavo.popularmovies"
+            android:name=".db.FavoriteProvider" />
     </application>
 
 </manifest>

@@ -1,9 +1,14 @@
 package br.com.gustavo.popularmovies;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,11 +20,18 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import br.com.gustavo.popularmovies.db.FavoriteContract;
+import br.com.gustavo.popularmovies.model.Movie;
+import br.com.gustavo.popularmovies.model.Result;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements AdapterGridMovies.MovieOnClickAdapter, Callback<Result>{
+public class MainActivity extends AppCompatActivity implements AdapterGridMovies.MovieOnClickAdapter, Callback<Result<Movie>> {
 
     private final static String TAG = MainActivity.class.getSimpleName();
 
@@ -27,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
     private final static String FLD_FILTER_STATE = "filter";
 
     public final static String SAVE_MOVIE = "SAVE_MOVIE";
+    private static final int LOADER_FETCH_FAVORITE = 1003;
 
     private int currentFilter;
 
@@ -70,6 +83,12 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getSupportLoaderManager().destroyLoader(LOADER_FETCH_FAVORITE);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
 
         outState.putParcelableArray(FLD_MOVIES_STATE, movies);
@@ -109,6 +128,19 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
         } else if (R.id.action_order_top_rated == id) {
             Log.d(TAG, "User clicked on order by top rated.");
             filterSelected = NetworkUtils.URL_RATED;
+        } else if (R.id.action_order_favorite == id) {
+            Log.d(TAG, "User clicked on order by top rated.");
+            filterSelected = NetworkUtils.FAVORITE;
+        }
+
+        if (filterSelected == NetworkUtils.FAVORITE) {
+            startLoadMovies();
+            if (getSupportLoaderManager().getLoader(LOADER_FETCH_FAVORITE) == null) {
+                getSupportLoaderManager().initLoader(LOADER_FETCH_FAVORITE, null, new LoaderFetchFavotire()).forceLoad();
+            } else {
+                getSupportLoaderManager().restartLoader(LOADER_FETCH_FAVORITE, null, new LoaderFetchFavotire()).forceLoad();
+            }
+            return true;
         }
 
         if (filterSelected > -1) {
@@ -148,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
     }
 
     @Override
-    public void onResponse(@NonNull Call<Result> call, @NonNull Response<Result> response) {
+    public void onResponse(@NonNull Call<Result<Movie>> call, @NonNull Response<Result<Movie>> response) {
         if (response.body() == null || response.body().getResults() == null) {
             finishLoadMovies(true);
             return ;
@@ -160,7 +192,56 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
     }
 
     @Override
-    public void onFailure(@NonNull Call<Result> call, @NonNull Throwable t) {
+    public void onFailure(@NonNull Call<Result<Movie>> call, @NonNull Throwable t) {
         finishLoadMovies(true);
+    }
+
+    private class LoaderFetchFavotire implements LoaderManager.LoaderCallbacks<List<Movie>> {
+
+        @SuppressLint("StaticFieldLeak")
+        @Override
+        public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
+            return new AsyncTaskLoader<List<Movie>>(getBaseContext()) {
+                @Override
+                public List<Movie> loadInBackground() {
+                    Cursor cursor = getContentResolver().query(FavoriteContract.FavoriteEntry.PATH_FAVORITE_URI,
+                            null,
+                            null,
+                            null,
+                            null);
+
+                    List<Movie> favotites = new ArrayList<>();
+
+                    while(cursor.moveToNext()) {
+                        Integer idMovie = cursor.getInt(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_NAME_ID_MOVIE));
+                        String title = cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_NAME_TITLE));
+                        String overview = cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_NAME_OVERVIEW));
+                        Double rated = cursor.getDouble(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_NAME_RATED));
+                        Long timestamp = cursor.getLong(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_NAME_RELEASEDATE));
+                        byte[] image = cursor.getBlob(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_NAME_IMAGE));
+
+                        favotites.add(new Movie(idMovie, title, overview, rated, new Date(timestamp), "", image));
+                    }
+                    return favotites;
+                }
+            };
+        }
+
+        @Override
+        public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
+            if (data.size() > 0) {
+                finishLoadMovies(false);
+                movies = new Movie[data.size()];
+                movies = data.toArray(movies);
+                ((AdapterGridMovies) recycler.getAdapter()).setNewMovies(movies);
+            } else {
+                finishLoadMovies(true);
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<List<Movie>> loader) {
+
+        }
     }
 }

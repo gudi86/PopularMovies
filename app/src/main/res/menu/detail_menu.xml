@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item
+        android:id="@+id/action_view_trailers"
+        android:orderInCategory="1"
+        android:title="@string/action_lbl_trailes" />
+    <item
+        android:id="@+id/action_view_reviews"
+        android:orderInCategory="2"
+        android:title="@string/action_lbl_reviews" />
 </menu>

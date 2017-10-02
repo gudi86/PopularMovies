@@ -1,22 +1,30 @@
 package br.com.gustavo.popularmovies;
 
-import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.net.URL;
+
+import br.com.gustavo.popularmovies.model.Movie;
 
 /**
  * Created by gustavomagalhaes on 6/12/17.
  */
 
-// TODO Implementar tratamento de erro nos caso em que não se tem conexão com a internet
 // TODO Verificar bug ao realizar o scroll e as imagens estão ficando com tamanho errado, o problema esta com a lib do glide.
 
 class AdapterGridMovies extends RecyclerView.Adapter<AdapterGridMovies.MovieViewHolder> {
@@ -62,15 +70,32 @@ class AdapterGridMovies extends RecyclerView.Adapter<AdapterGridMovies.MovieView
     public void onBindViewHolder(AdapterGridMovies.MovieViewHolder holder, int position) {
         Log.d(TAG, "Position holder: " + position);
 
-        URL url = NetworkUtils.buildUrlImageBy(mMovies[position]);
+        if (mMovies[position].getImage() != null && mMovies[position].getImage().length > 0) {
 
-        GlideApp.with(holder.itemView)
-                .load(url)
-                .placeholder(R.mipmap.ic_launcher)
-                .centerCrop()
-                .fitCenter()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.ivPoster);
+
+            Bitmap bitmap = BitmapFactory.decodeByteArray(mMovies[position].getImage(), 0, mMovies[position].getImage().length);
+
+            holder.ivPoster.setImageBitmap(bitmap);
+
+//            Glide.with(holder.itemView)
+//                    .asBitmap()
+//                    .load(bitmap)
+//                    .apply(RequestOptions.centerCropTransform()
+//                            .placeholder(R.mipmap.ic_launcher))
+//                    .into(holder.ivPoster);
+        } else {
+            URL url = NetworkUtils.buildUrlImageBy(mMovies[position], holder.itemView.getContext().getResources().getDisplayMetrics().densityDpi);
+
+            Glide.with(holder.itemView)
+                    .load(url)
+                    .apply(RequestOptions.centerCropTransform()
+                            .placeholder(R.mipmap.ic_launcher)
+                            .fitCenter()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL))
+                    .into(holder.ivPoster);
+
+        }
+
     }
 
     @Override

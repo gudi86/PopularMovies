@@ -3,9 +3,21 @@
     <string name="title_bar_details">MovieDetail</string>
     <string name="action_order_most_popular">Most Popular</string>
     <string name="action_order_top_rated">Top Rated</string>
+    <string name="action_order_favorite">Favorite</string>
     <string name="cd_title">Title Movie</string>
     <string name="txt_msg_error_load_movies">We can\'t load results. Try again.</string>
     <string name="lbl_try">Try Again</string>
     <string name="txt_msg_error_load_movie">Movie doesn\'t load. It will be closed.</string>
     <string name="lbl_ok">Ok</string>
+    <string name="lbl_add_mark_favorite">Add Favorite</string>
+    <string name="lbl_remove_mark_favorite">Remove Favorite</string>
+    <string name="msg_save_favority">This movie was added as favorite.</string>
+    <string name="msg_not_save_favority">This movie was not saved, try again please.</string>
+    <string name="msg_remove_favority">This movie was removed as favorite.</string>
+    <string name="msg_not_remove_favority">This movie was not removed, try again please.</string>
+    <string name="action_lbl_trailes">Trailers</string>
+    <string name="action_lbl_reviews">Reviews</string>
+    <string name="lbl_trailes">Trailers:</string>
+    <string name="lbl_reviews">Reviews:</string>
+    <string name="lbl_rate_average">%.2f / 10.0</string>
 </resources>

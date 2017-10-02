@@ -1,11 +1,10 @@
-package br.com.gustavo.popularmovies;
+package br.com.gustavo.popularmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -25,6 +24,7 @@ public class Movie implements Parcelable {
     private Date releaseDate;
     @SerializedName("poster_path")
     private String posterPath;
+    private byte[] image;
 
     public Movie(Integer id, String title, String overview, Double rated, Date releaseDate, String posterPath) {
         this.id = id;
@@ -35,6 +35,15 @@ public class Movie implements Parcelable {
         this.posterPath = posterPath;
     }
 
+    public Movie(Integer id, String title, String overview, Double rated, Date releaseDate, String posterPath, byte[] image) {
+        this.id = id;
+        this.title = title;
+        this.overview = overview;
+        this.rated = rated;
+        this.releaseDate = releaseDate;
+        this.image = image;
+    }
+
     protected Movie(Parcel in) {
         id = in.readInt();
         title = in.readString();
@@ -42,6 +51,9 @@ public class Movie implements Parcelable {
         posterPath = in.readString();
         rated = in.readDouble();
         releaseDate = new Date(in.readLong());
+        if (image != null) {
+            in.readByteArray(image);
+        }
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -84,6 +96,10 @@ public class Movie implements Parcelable {
         return posterPath;
     }
 
+    public byte[] getImage() {
+        return image;
+    }
+
     @Override
     public String toString() {
         return "{id:" + id + ", " +
@@ -107,5 +123,8 @@ public class Movie implements Parcelable {
         parcel.writeString(posterPath);
         parcel.writeDouble(rated);
         parcel.writeLong(releaseDate.getTime());
+        if (image != null) {
+            parcel.writeByteArray(image);
+        }
     }
 }
