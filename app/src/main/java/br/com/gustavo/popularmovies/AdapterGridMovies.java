@@ -71,18 +71,8 @@ class AdapterGridMovies extends RecyclerView.Adapter<AdapterGridMovies.MovieView
         Log.d(TAG, "Position holder: " + position);
 
         if (mMovies[position].getImage() != null && mMovies[position].getImage().length > 0) {
-
-
             Bitmap bitmap = BitmapFactory.decodeByteArray(mMovies[position].getImage(), 0, mMovies[position].getImage().length);
-
             holder.ivPoster.setImageBitmap(bitmap);
-
-//            Glide.with(holder.itemView)
-//                    .asBitmap()
-//                    .load(bitmap)
-//                    .apply(RequestOptions.centerCropTransform()
-//                            .placeholder(R.mipmap.ic_launcher))
-//                    .into(holder.ivPoster);
         } else {
             URL url = NetworkUtils.buildUrlImageBy(mMovies[position], holder.itemView.getContext().getResources().getDisplayMetrics().densityDpi);
 

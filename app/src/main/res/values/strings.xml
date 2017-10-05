@@ -6,6 +6,7 @@
     <string name="action_order_favorite">Favorite</string>
     <string name="cd_title">Title Movie</string>
     <string name="txt_msg_error_load_movies">We can\'t load results. Try again.</string>
+    <string name="txt_msg_error_load_favorite">You don\'t have any favorite movies at your list.</string>
     <string name="lbl_try">Try Again</string>
     <string name="txt_msg_error_load_movie">Movie doesn\'t load. It will be closed.</string>
     <string name="lbl_ok">Ok</string>

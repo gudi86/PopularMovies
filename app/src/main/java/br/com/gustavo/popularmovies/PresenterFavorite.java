@@ -2,6 +2,7 @@ package br.com.gustavo.popularmovies;
 
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.content.AsyncTaskLoader;
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,12 +14,14 @@ import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
 import br.com.gustavo.popularmovies.db.FavoriteContract;
@@ -45,40 +48,31 @@ public class PresenterFavorite {
     }
 
 
-    public void onClickAddFavorite(View view, final Movie movie) {
+    public void onClickAddFavorite(View view, ImageView poster, final Movie movie) {
 
         buttonFav = view;
 
         if (view.getTag() == null) {
-            Glide.with(context)
-                    .asBitmap()
-                    .load(NetworkUtils.buildUriImageBy(movie, context.getResources().getDisplayMetrics().densityDpi))
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
 
-                            Log.d(TAG, "Geting bitmap image");
-                            ByteBuffer byteBuffer = ByteBuffer.allocate(resource.getByteCount());
-                            resource.copyPixelsToBuffer(byteBuffer);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            ((BitmapDrawable) poster.getDrawable()).getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, stream);
 
-                            Movie saveMovie = new Movie(movie.getId(),
-                                    movie.getTitle(),
-                                    movie.getOverview(),
-                                    movie.getRated(),
-                                    movie.getReleaseDate(),
-                                    movie.getPosterPath(),
-                                    byteBuffer.array());
+            Movie saveMovie = new Movie(movie.getId(),
+                    movie.getTitle(),
+                    movie.getOverview(),
+                    movie.getRated(),
+                    movie.getReleaseDate(),
+                    movie.getPosterPath(),
+                    stream.toByteArray());
 
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable(FAVORITE_MOVIE, saveMovie);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(FAVORITE_MOVIE, saveMovie);
 
-                            if(((DetailsActivity)context).getSupportLoaderManager().getLoader(LOADER_ADD_FAVORITE) == null) {
-                                ((DetailsActivity) context).getSupportLoaderManager().initLoader(LOADER_ADD_FAVORITE, bundle, new LoaderAddFavorite()).forceLoad();
-                            } else {
-                                ((DetailsActivity) context).getSupportLoaderManager().restartLoader(LOADER_ADD_FAVORITE, bundle, new LoaderAddFavorite()).forceLoad();
-                            }
-                        }
-                    });
+            if(((DetailsActivity)context).getSupportLoaderManager().getLoader(LOADER_ADD_FAVORITE) == null) {
+                ((DetailsActivity) context).getSupportLoaderManager().initLoader(LOADER_ADD_FAVORITE, bundle, new LoaderAddFavorite()).forceLoad();
+            } else {
+                ((DetailsActivity) context).getSupportLoaderManager().restartLoader(LOADER_ADD_FAVORITE, bundle, new LoaderAddFavorite()).forceLoad();
+            }
         } else if (((Integer)view.getTag()).equals(movie.getId())) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(FAVORITE_MOVIE, movie);

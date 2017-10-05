@@ -6,14 +6,16 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,6 +49,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_details);
         binding.setPresenter(new PresenterFavorite(this));
+
+        binding.setPoster(binding.ivPoster);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
@@ -127,9 +131,14 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
     @BindingAdapter({"bind:imageUrl"})
     public static void loadImage(ImageView view, Movie movie) {
-        Glide.with(view.getContext())
-                .load(NetworkUtils.buildUrlImageBy(movie, view.getContext().getResources().getDisplayMetrics().densityDpi))
-                .into(view);
+        if (movie.getImage() != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(movie.getImage(), 0, movie.getImage().length);
+            view.setImageBitmap(bitmap);
+        } else {
+            Glide.with(view.getContext())
+                    .load(NetworkUtils.buildUrlImageBy(movie, view.getContext().getResources().getDisplayMetrics().densityDpi))
+                    .into(view);
+        }
     }
 
     @SuppressLint("StaticFieldLeak")

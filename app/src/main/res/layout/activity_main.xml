@@ -30,13 +30,16 @@
         tools:visibility="invisible">
 
         <ImageView
+            android:id="@+id/iv_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_signal_wifi_off"/>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_msg_error"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_high"
             android:layout_marginBottom="@dimen/margin_medium"
             android:textSize="20sp"

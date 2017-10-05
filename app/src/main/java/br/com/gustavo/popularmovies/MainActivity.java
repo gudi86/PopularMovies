@@ -17,8 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
 
     private LinearLayout llErrorLoad;
     private Movie[] movies = null;
+    private int filterSelected = NetworkUtils.URL_POPULAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,16 +124,20 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
 
         int id = item.getItemId();
 
-        int filterSelected = -1;
-        if (R.id.action_order_most_popular == id) {
+        int filterClicked = -1;
+        if (R.id.action_order_most_popular == id && filterSelected != NetworkUtils.URL_POPULAR) {
             Log.d(TAG, "User clicked on order by most popular.");
-            filterSelected = NetworkUtils.URL_POPULAR;
-        } else if (R.id.action_order_top_rated == id) {
+            filterClicked = filterSelected = NetworkUtils.URL_POPULAR;
+        } else if (R.id.action_order_top_rated == id && filterSelected != NetworkUtils.URL_RATED) {
             Log.d(TAG, "User clicked on order by top rated.");
-            filterSelected = NetworkUtils.URL_RATED;
-        } else if (R.id.action_order_favorite == id) {
+            filterClicked = filterSelected = NetworkUtils.URL_RATED;
+        } else if (R.id.action_order_favorite == id && filterSelected != NetworkUtils.FAVORITE) {
             Log.d(TAG, "User clicked on order by top rated.");
-            filterSelected = NetworkUtils.FAVORITE;
+            filterClicked = filterSelected = NetworkUtils.FAVORITE;
+        }
+
+        if (filterClicked < 0) {
+            return super.onOptionsItemSelected(item);
         }
 
         if (filterSelected == NetworkUtils.FAVORITE) {
@@ -143,14 +150,11 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
             return true;
         }
 
-        if (filterSelected > -1) {
-            currentFilter = filterSelected;
-            startLoadMovies();
-            NetworkUtils.createMovieServiceBySort(currentFilter).enqueue(this);
-            return true;
-        }
+        currentFilter = filterSelected;
+        startLoadMovies();
+        NetworkUtils.createMovieServiceBySort(currentFilter).enqueue(this);
+        return true;
 
-        return super.onOptionsItemSelected(item);
     }
 
     private void startLoadMovies() {
@@ -163,15 +167,29 @@ public class MainActivity extends AppCompatActivity implements AdapterGridMovies
 
     private void finishLoadMovies(Boolean isError) {
         if (isError) {
+            ImageView imgError = (ImageView) findViewById(R.id.iv_error);
+            TextView msgError = (TextView) findViewById(R.id.tv_msg_error);
+            if (filterSelected == NetworkUtils.FAVORITE) {
+                imgError.setImageResource(R.drawable.ic_video_off);
+                msgError.setText(R.string.txt_msg_error_load_favorite);
+            } else {
+                imgError.setImageResource(R.drawable.ic_signal_wifi_off);
+                msgError.setText(R.string.txt_msg_error_load_movies);
+            }
             llErrorLoad.setVisibility(View.VISIBLE);
             Button button = (Button) llErrorLoad.findViewById(R.id.bt_try);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startLoadMovies();
-                    NetworkUtils.createMovieServiceBySort(currentFilter).enqueue(MainActivity.this);
-                }
-            });
+            button.setVisibility(View.VISIBLE);
+            if (filterSelected == NetworkUtils.FAVORITE) {
+                button.setVisibility(View.GONE);
+            } else {
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startLoadMovies();
+                        NetworkUtils.createMovieServiceBySort(currentFilter).enqueue(MainActivity.this);
+                    }
+                });
+            }
 
         } else {
             recycler.setVisibility(View.VISIBLE);

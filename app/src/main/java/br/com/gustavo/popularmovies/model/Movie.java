@@ -36,11 +36,7 @@ public class Movie implements Parcelable {
     }
 
     public Movie(Integer id, String title, String overview, Double rated, Date releaseDate, String posterPath, byte[] image) {
-        this.id = id;
-        this.title = title;
-        this.overview = overview;
-        this.rated = rated;
-        this.releaseDate = releaseDate;
+        this(id, title, overview, rated, releaseDate, null);
         this.image = image;
     }
 
@@ -51,7 +47,8 @@ public class Movie implements Parcelable {
         posterPath = in.readString();
         rated = in.readDouble();
         releaseDate = new Date(in.readLong());
-        if (image != null) {
+        if (posterPath == null) {
+            image = new byte[in.readInt()];
             in.readByteArray(image);
         }
     }
@@ -124,6 +121,7 @@ public class Movie implements Parcelable {
         parcel.writeDouble(rated);
         parcel.writeLong(releaseDate.getTime());
         if (image != null) {
+            parcel.writeInt(image.length);
             parcel.writeByteArray(image);
         }
     }

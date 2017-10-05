@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="pad_high">30dp</dimen>
+    <dimen name="pad_high_land">15dp</dimen>
     <dimen name="pad_medium">15dp</dimen>
     <dimen name="pad_low">8dp</dimen>
     <dimen name="margin_medium">10dp</dimen>
