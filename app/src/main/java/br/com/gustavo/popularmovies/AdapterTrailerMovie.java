@@ -51,7 +51,7 @@ public class AdapterTrailerMovie extends RecyclerView.Adapter<AdapterTrailerMovi
             Glide.with(holder.itemView)
                     .load(new URL(uri.toString()))
                     .apply(RequestOptions.centerCropTransform()
-                            .placeholder(R.mipmap.ic_launcher) // TODO Trocar imagem do place holder
+                            .placeholder(R.drawable.ic_play) // TODO Trocar imagem do place holder
                             .fitCenter()
                             .diskCacheStrategy(DiskCacheStrategy.ALL))
                     .into(holder.ivPoster);

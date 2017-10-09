@@ -10,4 +10,7 @@
     <dimen name="txt_sz_high">40sp</dimen>
     <dimen name="txt_sz_medium">30sp</dimen>
     <dimen name="txt_sz_low">16sp</dimen>
+
+    <dimen name="width_img_detail">114dp</dimen>
+    <dimen name="height_img_detail">172dp</dimen>
 </resources>

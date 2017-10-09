@@ -15,13 +15,13 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import br.com.gustavo.popularmovies.databinding.ActivityDetailsBinding;
 import br.com.gustavo.popularmovies.db.FavoriteContract;
@@ -41,7 +41,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     public static final int LOADER_REMOVE_FAVORITE = 1002;
     private Movie movie;
     private Integer itemSeleted = R.id.action_view_trailers;
-    private String TAG = DetailsActivity.class.getName();
+    private static String TAG = DetailsActivity.class.getName();
     private ActivityDetailsBinding binding;
 
     @Override
@@ -137,6 +137,11 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         } else {
             Glide.with(view.getContext())
                     .load(NetworkUtils.buildUrlImageBy(movie, view.getContext().getResources().getDisplayMetrics().densityDpi))
+                    .apply(
+                            RequestOptions
+                                    .centerCropTransform()
+                                    .fitCenter()
+                                    .placeholder(R.drawable.alert_circle))
                     .into(view);
         }
     }

@@ -53,7 +53,6 @@ public class PresenterFavorite {
         buttonFav = view;
 
         if (view.getTag() == null) {
-
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             ((BitmapDrawable) poster.getDrawable()).getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, stream);
 

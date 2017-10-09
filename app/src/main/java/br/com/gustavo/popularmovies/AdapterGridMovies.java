@@ -1,5 +1,6 @@
 package br.com.gustavo.popularmovies;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
@@ -79,7 +80,7 @@ class AdapterGridMovies extends RecyclerView.Adapter<AdapterGridMovies.MovieView
             Glide.with(holder.itemView)
                     .load(url)
                     .apply(RequestOptions.centerCropTransform()
-                            .placeholder(R.mipmap.ic_launcher)
+                            .placeholder(R.drawable.ic_error_img)
                             .fitCenter()
                             .diskCacheStrategy(DiskCacheStrategy.ALL))
                     .into(holder.ivPoster);
