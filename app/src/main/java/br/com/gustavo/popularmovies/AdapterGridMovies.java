@@ -82,9 +82,9 @@ class AdapterGridMovies extends RecyclerView.Adapter<AdapterGridMovies.MovieView
                     .apply(RequestOptions.centerCropTransform()
                             .placeholder(R.drawable.ic_error_img)
                             .fitCenter()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL))
+//                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    )
                     .into(holder.ivPoster);
-
         }
 
     }

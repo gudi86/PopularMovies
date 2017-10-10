@@ -15,9 +15,11 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -57,6 +59,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         binding.rvMoreInfo.setLayoutManager(linearLayoutManager);
 
         binding.rvMoreInfo.setHasFixedSize(true);
+
+//        binding.tvSynopsis.setMovementMethod(new ScrollingMovementMethod());
 
         if (savedInstanceState != null && savedInstanceState.containsKey(MainActivity.SAVE_MOVIE)) {
             movie = savedInstanceState.getParcelable(MainActivity.SAVE_MOVIE);
@@ -139,8 +143,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                     .load(NetworkUtils.buildUrlImageBy(movie, view.getContext().getResources().getDisplayMetrics().densityDpi))
                     .apply(
                             RequestOptions
-                                    .centerCropTransform()
-                                    .fitCenter()
+                                    .centerInsideTransform()
+                                    .centerCrop()
                                     .placeholder(R.drawable.alert_circle))
                     .into(view);
         }

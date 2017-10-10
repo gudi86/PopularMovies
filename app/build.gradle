@@ -29,7 +29,7 @@ android {
         }
 
         buildTypes.each {
-            it.buildConfigField "String", API_KEY, '""'
+            it.buildConfigField "String", API_KEY, '"f8eaaf178b127b18ef4bf79a34264ddb"'
             it.buildConfigField "String", URL_MOVIE, '"https://api.themoviedb.org/"'
             it.buildConfigField "String", URL_IMG, '"http://image.tmdb.org/"'
             it.buildConfigField "String", URL_YOUTUBE, '"http://www.youtube.com/watch?v="'
